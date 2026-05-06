@@ -5,29 +5,13 @@ using static Microsoft.Playwright.Assertions;
 using Microsoft.VisualBasic;
 
 [TestFixture]
-public class LoginTests
+public class LoginTests : TestBase
 {
     string FrameLogin = Environment.GetEnvironmentVariable("FRAME_AUTOMATION_EMAIL")!;
     string FramePassword = Environment.GetEnvironmentVariable("FRAME_AUTOMATION_PASSWORD")!;
 
-
-    //This section and OneTimeSetup for debugging only, not best practice
-    private IPlaywright? _playwright;
-    private IBrowser? _browser;    
     private IPage? _page;
     private IPage _frameHomePopup;
-
-    [OneTimeSetUp]
-    public async Task GlobalSetUp()
-    {
-        _playwright = await Playwright.CreateAsync();
-        _browser = await _playwright.Chromium.LaunchAsync(new()
-        {
-            Headless = false,
-            SlowMo = 50
-        });
-    }
-
 
     private async Task OpenFrameHome()
     {
@@ -49,8 +33,12 @@ public class LoginTests
     [SetUp]
     public async Task SetUp()
     {
-        _page = await _browser!.NewPageAsync();
-        Console.WriteLine("This Setup runs per task");
+        _page = await _browser!.NewPageAsync(new()
+        {
+            //Setting viewport size is required as some layouts in Frame Home are different depending 
+            // on Window Sizing, such as the logout nav drawer
+            ViewportSize = new ViewportSize { Width = 1280, Height = 720 }
+        });
         await _page.GotoAsync("https://learn.framevr.io/");
     }
     
@@ -62,6 +50,7 @@ public class LoginTests
         Console.WriteLine("Finished checking positive case");
         await _page!.WaitForTimeoutAsync(3000);
     }
+
     [Test]
     public async Task LoginBadCredential()
     {
@@ -69,15 +58,15 @@ public class LoginTests
         await Expect(_frameHomePopup.GetByText("Incorrect password. Please try again.")).ToBeVisibleAsync();
     }
 
-    // [Test]
-    // public async Task LogOutSuccess()
-    // {
-    //     await Login();
-    //     await _page.Locator("a[href='/logout']").ClickAsync();
-    //     await _page.WaitForURLAsync("**/login");
-    //     await Expect(_page.GetByText("Signup / Login")).ToBeVisibleAsync();
-    //     Console.WriteLine("End logout test");
-    // }
+    [Test]
+    public async Task LogOutSuccess()
+    {
+        await LoginToFrameHome(FrameLogin, FramePassword);
+        //Executing a force command since Log Out is hidden behind a nav drawer
+        await _frameHomePopup.GetByText("Log Out").ClickAsync(new() { Force = true });
+        await Expect(_frameHomePopup.GetByRole(AriaRole.Button, new () {Name = "Login / Signup"})).ToBeVisibleAsync();
+        Console.WriteLine("End logout test");
+    }
 
     //Teardown fires after every test is completed
     [TearDown]
@@ -85,12 +74,5 @@ public class LoginTests
     {
         await _page!.CloseAsync();
         await _frameHomePopup.CloseAsync();
-    }
-
-    [OneTimeTearDown]
-    public async Task GlobalTearDown()
-    {
-        await _browser!.CloseAsync();
-        _playwright!.Dispose();
     }
 }
