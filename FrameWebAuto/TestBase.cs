@@ -32,8 +32,8 @@ public class TestBase
         _playwright = await Playwright.CreateAsync();
         _browser = await _playwright.Chromium.LaunchAsync(new()
         {
-            Headless = true,
-            //SlowMo = 50
+            Headless = false,
+            SlowMo = 50
         });
     }
     //Always do Setup - Setup fires before each test to execute
