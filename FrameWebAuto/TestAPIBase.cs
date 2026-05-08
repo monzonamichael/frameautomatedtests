@@ -26,12 +26,11 @@ public class TestAPIBase : PlaywrightTest
     [Test]
     public async Task GetActiveScene()
     {
-        string frameRef = "qa-whatever"; // replace with your actual frame ref
+        string frameRef = "qa-whatever"; //TODO: replace with dynamic create on globalsetup
         
         HttpResponseMessage response = await FrameHttpClient.GetAsync(
             $"https://api.framevr.io/automate/v1/scene/{frameRef}"
         );
-
         string body = await response.Content.ReadAsStringAsync();
 
         Console.WriteLine($"Status: {response.StatusCode}");
