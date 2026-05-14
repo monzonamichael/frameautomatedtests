@@ -5,9 +5,9 @@ public class TestBase
 {
     protected string FrameLogin = Environment.GetEnvironmentVariable("FRAME_AUTOMATION_EMAIL")!;
     protected string FramePassword = Environment.GetEnvironmentVariable("FRAME_AUTOMATION_PASSWORD")!;
-    protected IPlaywright? _playwright;
-    protected IBrowser? _browser;
-    protected IPage? _page;
+    protected IPlaywright _playwright = null!;
+    protected IBrowser _browser = null!;
+    protected IPage _page = null!;
     protected IPage? _frameHomePopup;
     protected string FrameTestURL = "qa-automation-test-1";
 
@@ -21,7 +21,7 @@ public class TestBase
     protected async Task LoginToFrameHome(string a_Username, string a_Password)
     {
         await OpenFrameHome();
-        await _frameHomePopup.Locator("#input-v-5").FillAsync(a_Username);
+        await _frameHomePopup!.Locator("#input-v-5").FillAsync(a_Username);
         await _frameHomePopup.Locator("#user-password").FillAsync(a_Password);
         await _frameHomePopup.GetByRole(AriaRole.Button, new () {Name = "Login / Signup"}).ClickAsync();
     }
@@ -52,14 +52,14 @@ public class TestBase
     [TearDown]
      public async Task TearDown()
     {
-        await _page!.CloseAsync();
+        await _page.CloseAsync();
         if (_frameHomePopup != null ) await _frameHomePopup.CloseAsync();
     }
     [OneTimeTearDown]
     public async Task GlobalTearDown()
     {
-        await _browser!.CloseAsync();
-        _playwright!.Dispose();
+        await _browser.CloseAsync();
+        _playwright.Dispose();
     }
 
 

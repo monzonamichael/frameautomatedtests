@@ -9,10 +9,11 @@ using System.Text.RegularExpressions;
 public class FrameManagementTests : TestBase
 {
     [Test]
+    [Category("FrameManagement")]
     public async Task CreateNewFrame()
     {
         await LoginToFrameHome(FrameLogin, FramePassword);
-        await _frameHomePopup.Locator("button.v-btn--variant-outlined:has-text('New Frame')").ClickAsync();
+        await _frameHomePopup!.Locator("button.v-btn--variant-outlined:has-text('New Frame')").ClickAsync();
         await _frameHomePopup.Locator("input[placeholder='My New Frame']").FillAsync("qa-automation-test-1");
         await _frameHomePopup.Locator("button.v-btn--variant-elevated:has-text('New Frame')").ClickAsync();
         await Expect(_frameHomePopup).ToHaveURLAsync("https://framevr.io/" + FrameTestURL);
@@ -21,9 +22,10 @@ public class FrameManagementTests : TestBase
 
 
     [TearDown]
+    [Category("FrameManagement")]
     public async Task CleanUpFrames()
     {
-        await _frameHomePopup.GotoAsync("https://framevr.io/home");
+        await _frameHomePopup!.GotoAsync("https://framevr.io/home");
         await _frameHomePopup.WaitForURLAsync("**/home");
         await _frameHomePopup
             .Locator(".position-relative:has(a:has-text('qa-automation-test-1')) button:has(.mdi-dots-vertical)")
