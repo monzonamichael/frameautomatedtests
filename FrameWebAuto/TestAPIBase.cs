@@ -60,6 +60,42 @@ public class TestAPIBase : PlaywrightTest
                 Is.EqualTo(int.Parse(SceneNum)));
     }
 
+    [Test]
+    [Category("API")]
+    public async Task ReadFrame()
+    {
+        HttpResponseMessage response = await FrameHttpClient.GetAsync(
+            $"{apiHeader}/frame/{frameRef}"
+        );
+        string body = await response.Content.ReadAsStringAsync();
+        Console.WriteLine("Calling Readframe");
+        Console.WriteLine($"Status: {response.StatusCode}");
+        Console.WriteLine($"Body: {body}");
+
+        Assert.That(response.IsSuccessStatusCode, Is.True, $"Request failed: {body}");
+        var jsonResponse = JsonDocument.Parse(body);
+        Assert.That(jsonResponse.RootElement.GetProperty("message").ToString(), Is.EqualTo($"Settings of {frameRef}"));
+        Assert.That(jsonResponse.RootElement.GetProperty("data"), Is.Not.Empty);
+    }
+
+        [Test]
+    [Category("API")]
+    public async Task UpdateFrame()
+    {
+        HttpResponseMessage response = await FrameHttpClient.PatchAsync(
+            $"{apiHeader}/frame/{frameRef}"
+        );
+        string body = await response.Content.ReadAsStringAsync();
+        Console.WriteLine("Calling Readframe");
+        Console.WriteLine($"Status: {response.StatusCode}");
+        Console.WriteLine($"Body: {body}");
+
+        Assert.That(response.IsSuccessStatusCode, Is.True, $"Request failed: {body}");
+        var jsonResponse = JsonDocument.Parse(body);
+        Assert.That(jsonResponse.RootElement.GetProperty("message").ToString(), Is.EqualTo($"Settings of {frameRef}"));
+        Assert.That(jsonResponse.RootElement.GetProperty("data"), Is.Not.Empty);
+    }
+
     [TearDown]
     [Category("API")]
     public async Task Teardown()
