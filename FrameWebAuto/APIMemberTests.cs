@@ -25,6 +25,7 @@ public class APIMemberTests : APITestBase
 
     [OneTimeSetUp]
     [Category("API")]
+    [Category("GitHub")]
     public async Task CreateFrameMember()
     {
         HttpResponseMessage response = await FrameHttpClient.PostAsync(
@@ -41,6 +42,7 @@ public class APIMemberTests : APITestBase
 
     [Test]
     [Category("API")]
+    [Category("GitHub")]
     public async Task ReadFrameMember()
     {
         await CheckReadFrameMemberExists(testEmail, true);
@@ -48,6 +50,7 @@ public class APIMemberTests : APITestBase
 
     [OneTimeTearDown]
     [Category("API")]
+    [Category("GitHub")]
     public async Task DeleteFrameMember()
     {
         HttpResponseMessage response = await FrameHttpClient.DeleteAsync(

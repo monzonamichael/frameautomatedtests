@@ -25,6 +25,7 @@ public class APIAdminTests : APITestBase
 
     [OneTimeSetUp]
     [Category("Current")]
+    [Category("GitHub")]
     public async Task CreateFrameAdmin()
     {
         HttpResponseMessage response = await FrameHttpClient.PostAsync(
@@ -41,6 +42,7 @@ public class APIAdminTests : APITestBase
 
     [Test]
     [Category("Current")]
+    [Category("GitHub")]
     public async Task ReadFrameAdmin()
     {
         await CheckReadFrameAdminExists(testEmail, true);
@@ -48,6 +50,7 @@ public class APIAdminTests : APITestBase
 
     [OneTimeTearDown]
     [Category("Current")]
+    [Category("GitHub")]
     public async Task DeleteFrameAdmin()
     {
         HttpResponseMessage response = await FrameHttpClient.DeleteAsync(

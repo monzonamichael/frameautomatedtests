@@ -1,0 +1,29 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore
+      run: dotnet restore
+
+    - name: Run Smoke Tests
+      env:
+        FRAME_API_KEY: ${{ secrets.FRAME_API_KEY }}
+        FRAME_AUTOMATION_EMAIL: ${{ secrets.FRAME_AUTOMATION_EMAIL }}
+        FRAME_AUTOMATION_PASSWORD: ${{ secrets.FRAME_AUTOMATION_PASSWORD }}
+      run: dotnet test --filter "TestCategory=GitHub"

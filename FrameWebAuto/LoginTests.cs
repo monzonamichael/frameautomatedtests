@@ -7,7 +7,7 @@ using static Microsoft.Playwright.Assertions;
 public class LoginTests : TestBase
 {
     [Test]
-    [Category("Login")]
+    [Category("Browser")]
     public async Task LoginAuthSuccess()
     {
         await LoginToFrameHome(FrameLogin, FramePassword);
@@ -17,7 +17,7 @@ public class LoginTests : TestBase
     }
 
     [Test]
-    [Category("Login")]
+    [Category("Browser")]
     public async Task LoginBadCredential()
     {
         await LoginToFrameHome(FrameLogin, "BadPassword");
@@ -26,7 +26,7 @@ public class LoginTests : TestBase
     }
 
     [Test]
-    [Category("Login")]
+    [Category("Browser")]
     public async Task LogOutSuccess()
     {
         await LoginToFrameHome(FrameLogin, FramePassword);

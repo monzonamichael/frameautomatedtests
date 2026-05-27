@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 public class FrameManagementTests : TestBase
 {
     [Test]
-    [Category("FrameManagement")]
+    [Category("Browser")]
     public async Task CreateNewFrame()
     {
         await LoginToFrameHome(FrameLogin, FramePassword);
@@ -22,7 +22,7 @@ public class FrameManagementTests : TestBase
 
 
     [TearDown]
-    [Category("FrameManagement")]
+    [Category("Browser")]
     public async Task CleanUpFrames()
     {
         await _frameHomePopup!.GotoAsync("https://framevr.io/home");

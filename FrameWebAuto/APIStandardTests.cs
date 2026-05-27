@@ -5,6 +5,7 @@ public class APIStandardTests : APITestBase
 {
     [Test]
     [Category("API")]
+    [Category("GitHub")]
     public async Task GetActiveScene()
     {
         HttpResponseMessage response = await FrameHttpClient.GetAsync(
@@ -24,6 +25,7 @@ public class APIStandardTests : APITestBase
 
     [Test]
     [Category("API")]
+    [Category("GitHub")]
     public async Task WriteActiveScene()
     {
         string SceneNum = "1";
@@ -41,6 +43,7 @@ public class APIStandardTests : APITestBase
 
     [Test]
     [Category("API")]
+    [Category("GitHub")]
     public async Task ReadFrame()
     {
         HttpResponseMessage response = await FrameHttpClient.GetAsync(
@@ -59,6 +62,7 @@ public class APIStandardTests : APITestBase
 
     [Test]
     [Category("API")]
+    [Category("GitHub")]
     public async Task UpdateFrame()
     {
         //Send arbitrary data

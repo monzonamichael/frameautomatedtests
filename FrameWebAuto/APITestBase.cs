@@ -1,10 +1,6 @@
 
 using System.Net.Http.Headers;
-using Microsoft.Playwright;
-using NUnit.Framework;
 using Microsoft.Playwright.NUnit;
-using System.Text.Json;
-
 
 public class APITestBase : PlaywrightTest
 {
@@ -16,14 +12,17 @@ public class APITestBase : PlaywrightTest
 
     [OneTimeSetUp]
     [Category("API")]
+    [Category("GitHub")]
     public async Task Authenticate()
     {
+        //Builds our connection reference and sets the API Key
         FrameHttpClient = new HttpClient();
         FrameHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", FrameAPIKey); 
     }
 
     [OneTimeTearDown]
     [Category("API")]
+    [Category("GitHub")]
     public async Task Teardown()
     {
         FrameHttpClient?.Dispose();
