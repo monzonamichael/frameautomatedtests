@@ -1,33 +1,12 @@
-
-using System.Net.Http.Headers;
-using Microsoft.Playwright;
-using NUnit.Framework;
-using Microsoft.Playwright.NUnit;
 using System.Text.Json;
 
 
-public class TestAPIBase : PlaywrightTest
+public class APIStandardTests : APITestBase
 {
-    protected string FrameAPIKey = Environment.GetEnvironmentVariable("FRAME_API_KEY")!;
-    protected Dictionary<string, string> Headers;
-    protected HttpClient FrameHttpClient;
-    protected string frameRef = "qa-staticautomationframe";
-    protected string apiHeader = "https://api.framevr.io/automate/v1";
-
-    [SetUp]
-    [Category("API")]
-    public async Task Authenticate()
-    {
-        FrameHttpClient = new HttpClient();
-        FrameHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", FrameAPIKey); 
-    }
-
     [Test]
     [Category("API")]
     public async Task GetActiveScene()
     {
-        
-        
         HttpResponseMessage response = await FrameHttpClient.GetAsync(
             $"{apiHeader}/scene/{frameRef}"
         );
@@ -75,31 +54,32 @@ public class TestAPIBase : PlaywrightTest
         Assert.That(response.IsSuccessStatusCode, Is.True, $"Request failed: {body}");
         var jsonResponse = JsonDocument.Parse(body);
         Assert.That(jsonResponse.RootElement.GetProperty("message").ToString(), Is.EqualTo($"Settings of {frameRef}"));
-        Assert.That(jsonResponse.RootElement.GetProperty("data"), Is.Not.Empty);
+        Assert.That(jsonResponse.RootElement.GetProperty("data").ToString(), Is.Not.Empty);
     }
 
-        [Test]
+    [Test]
     [Category("API")]
     public async Task UpdateFrame()
     {
-        HttpResponseMessage response = await FrameHttpClient.PatchAsync(
-            $"{apiHeader}/frame/{frameRef}"
+        //Send arbitrary data
+        var deliverBody = new { isSinglePlayerMode = false };
+        //Convert our change to JSON content    
+        var content = new StringContent(
+            JsonSerializer.Serialize(deliverBody),
+            System.Text.Encoding.UTF8,
+            "application/json"
         );
+         HttpResponseMessage response = await FrameHttpClient.PatchAsync(
+            $"{apiHeader}/frame/{frameRef}", content
+        );
+
         string body = await response.Content.ReadAsStringAsync();
-        Console.WriteLine("Calling Readframe");
+        var jsonResponse = JsonDocument.Parse(body);
+        Console.WriteLine("Calling Updateframe");
         Console.WriteLine($"Status: {response.StatusCode}");
         Console.WriteLine($"Body: {body}");
-
+        
         Assert.That(response.IsSuccessStatusCode, Is.True, $"Request failed: {body}");
-        var jsonResponse = JsonDocument.Parse(body);
-        Assert.That(jsonResponse.RootElement.GetProperty("message").ToString(), Is.EqualTo($"Settings of {frameRef}"));
-        Assert.That(jsonResponse.RootElement.GetProperty("data"), Is.Not.Empty);
-    }
-
-    [TearDown]
-    [Category("API")]
-    public async Task Teardown()
-    {
-        FrameHttpClient?.Dispose();
+        Assert.That(jsonResponse.RootElement.GetProperty("isSinglePlayerMode").ToString().ToLower(), Is.EqualTo("false"));
     }
 }
